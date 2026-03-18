@@ -4,7 +4,7 @@ import Link from "next/link";
 import { CreditCard } from "lucide-react";
 import { sanityFetch } from "@/sanity/lib/live";
 import { USER_CONNECTED_ACCOUNTS_DISPLAY_QUERY } from "@/sanity/queries/user";
-// import { AccountManager } from "@/components/settings/account-manager";
+import { AccountManager } from "@/components/settings/account-manager";
 import { getUserPlanLimits } from "@/lib/features";
 
 export default async function SettingsPage({
@@ -41,7 +41,7 @@ export default async function SettingsPage({
       {params.success && (
         <div className="mb-6 rounded-md bg-green-50 border border-green-200 p-4 text-green-800">
           {params.success === "account_connected" &&
-            "Googoe account connected successfully"}
+            "Google account connected successfully"}
           {params.success === "account_updated" &&
             "Google account tokens refreshed"}
         </div>
@@ -63,11 +63,11 @@ export default async function SettingsPage({
         </div>
       )}
 
-      {/* <AccountManager
+      <AccountManager
         connectedAccounts={connectedAccounts}
-        mazxCalendars={planLimits.maxConnectedCalendars}
+        maxCalendars={planLimits.maxConnectedCalendars}
         plan={planLimits.plan}
-      /> */}
+      />
 
       {/* Billing Section */}
       <div className="mt-8 pt-8 border-t">
