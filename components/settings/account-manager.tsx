@@ -6,10 +6,10 @@ import Link from "next/link";
 import { ArrowRight, Loader2, Plus, Star, Trash2 } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { Button } from "@/components/ui/button";
-// import {
-//   disconnectGoogleAccount,
-//   setDefaultCalendarAccount,
-// } from "@/lib/actions/calendar";
+import {
+  disconnectGoogleAccount,
+  setDefaultCalendarAccount,
+} from "@/lib/actions/calendar";
 import type { ConnectedAccountDisplay } from "@/sanity/queries/user";
 import type { PlanType } from "@/lib/features";
 
@@ -26,7 +26,7 @@ export function AccountManager({
 }: AccountManagerProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [pendingAction, setPendingActiong] = useState<string | null>(null);
+  const [pendingAction, setPendingAction] = useState<string | null>(null);
 
   const currentCount = connectedAccounts.length;
   const isAtLimit = currentCount >= maxCalendars;
@@ -38,10 +38,30 @@ export function AccountManager({
   };
 
   const handleDisconnect = async (accountKey: string) => {
-    setPendingActiong(`disconnect-${accountKey}`);
+    setPendingAction(`disconnect-${accountKey}`);
     startTransition(async () => {
       try {
-      } catch (error) {}
+        await disconnectGoogleAccount(accountKey);
+        router.refresh();
+      } catch (error) {
+        console.error("Failed to disconnect account:", error);
+      } finally {
+        setPendingAction(null);
+      }
+    });
+  };
+
+  const handleSetDefault = async (accountKey: string) => {
+    setPendingAction(`default-${accountKey}`);
+    startTransition(async () => {
+      try {
+        await setDefaultCalendarAccount(accountKey);
+        router.refresh();
+      } catch (error) {
+        console.error("Failed to set default account:", error);
+      } finally {
+        setPendingAction(null);
+      }
     });
   };
 
@@ -82,8 +102,83 @@ export function AccountManager({
           </p>
         </div>
       ) : (
-        <div></div>
+        <div className="space-y-3">
+          {connectedAccounts.map((account) => (
+            <div
+              key={account._key}
+              className="flex items-center justify-between rounded-lg border p-4"
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
+                  <FcGoogle className="h-5-w-5" />
+                </div>
+                <div>
+                  <p className="font-medium">{account.email}</p>
+                  {account.isDefault && (
+                    <p className="text=xs text-muted-foreground flex items-center gap-1">
+                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                      Default for new bookings
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                {!account.isDefault && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={isPending}
+                    onClick={() => handleSetDefault(account._key)}
+                  >
+                    {pendingAction === `default-${account._key}` ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <>
+                        <Star className="mr-1 h-3 w-3" />
+                        Set Default
+                      </>
+                    )}
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleDisconnect(account._key)}
+                  disabled={isPending}
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  {pendingAction === `disconnect-${account._key}` ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <>
+                      <Trash2 className="h-3 w-3 mr-1" />
+                      Disconnect
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
+
+      <div className="rounded-lg bg-muted/50 p-4">
+        <h3 className="font-medium">How it works</h3>
+        <ul className="mt-1 space-y-1 text-sm text-muted-foreground">
+          <li>
+            • Your busy times from connected calendars are show on your
+            availability page
+          </li>
+          <li>
+            • When someone books a metting, an event is created on your default
+            calendar
+          </li>
+          <li>
+            • Both you and your guest receive email invitations from Google
+          </li>
+        </ul>
+      </div>
     </div>
   );
 }

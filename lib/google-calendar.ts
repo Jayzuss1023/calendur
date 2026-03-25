@@ -5,6 +5,7 @@ import {
   USER_ID_BY_ACCOUNT_KEY_QUERY,
   type ConnectedAccountWithTokens,
 } from "@/sanity/queries/user";
+import { oauth2 } from "googleapis/build/src/apis/oauth2";
 
 // OAuth2 client config
 export function createOAuth2Client() {
@@ -59,4 +60,179 @@ export async function getGoogleUserInfo(accessToken: string) {
     email: data.email,
     name: data.name,
   };
+}
+
+// Update account tokens in Sanity after refresh
+async function updateAccountTokens(
+  accountKey: string,
+  tokens: { accessToken: string; expiryDate: number },
+) {
+  // Locate user and update tokens
+  const user = await client.fetch(USER_ID_BY_ACCOUNT_KEY_QUERY, { accountKey });
+
+  if (user) {
+    await writeClient
+      .patch(user._id)
+      .set({
+        [`connectedAccounts[_key=="${accountKey}"].accessToken`]:
+          tokens.accessToken,
+        [`connectedAccounts[_key=="${accountKey}"].expiryDate`]:
+          tokens.expiryDate,
+      })
+      .commit();
+  }
+}
+
+// Revoke Google OAuth token
+export async function revokeGoogleToken(accessToken: string) {
+  try {
+    await fetch(`https://oauth2.googleapis.com/revoke?token=${accessToken}`, {
+      method: "POST",
+    });
+  } catch (error) {
+    console.error("Failed to revoke token:", error);
+  }
+}
+
+// Get a calendar client for a specific connected account
+export async function getCalendarClient(account: ConnectedAccountWithTokens) {
+  const oauth2Client = createOAuth2Client();
+
+  oauth2Client.setCredentials({
+    access_token: account.accessToken,
+    refresh_token: account.refreshToken,
+    expiry_date: account.expiryDate,
+  });
+
+  // Check if token needs refresh
+  if (account.expiryDate && Date.now() >= account.expiryDate - 60000) {
+    try {
+      const { credentials } = await oauth2Client.refreshAccessToken();
+
+      if (!credentials.access_token || !credentials.expiry_date) {
+        throw new Error("Invalid credentials received from refresh");
+      }
+
+      // Update tokens in Sanity
+      await updateAccountTokens(account._key, {
+        accessToken: credentials.access_token,
+        expiryDate: credentials.expiry_date,
+      });
+
+      oauth2Client.setCredentials(credentials);
+    } catch (error) {
+      console.error("Failed to refresh token:", error);
+      throw new Error("Token refresh failed. Please reconnect your account.");
+    }
+  }
+
+  return google.calendar({ version: "v3", auth: oauth2Client });
+}
+
+// ============================================================================
+// Shared Google Calendar Functions
+// ============================================================================
+
+/**
+ *  Direct from Google Calendar's Single Event Type
+ * Named to distinguish from UI CalendarEvent in components/calendar/types
+ */
+export type GoogleCalendarEvent = {
+  start: Date;
+  end: Date;
+  title: string;
+  accountEmail: string;
+};
+
+/**
+ * Fetch events from connected accounts
+ * Core function used by both authenticated and public busy time fetchers
+ */
+export async function fetchCalendarEvents(
+  accounts: ConnectedAccountWithTokens[],
+  startDate: Date,
+  endDate: Date,
+) {
+  // Promise<GoogleCalendarEvent[]>
+  const events: GoogleCalendarEvent[] = [];
+
+  for (const account of accounts) {
+    if (!account.accessToken || !account.refreshToken) continue;
+
+    try {
+      const calendar = await getCalendarClient(account);
+
+      const { data } = await calendar.events.list({
+        calendarId: "primary",
+        timeMin: startDate.toISOString(),
+        timeMax: endDate.toISOString(),
+        singleEvents: true,
+        orderBy: "startTime",
+      });
+
+      for (const event of data.items ?? []) {
+        // Skip all-day events (they have date instead of dateTime)
+        if (!event.start?.dateTime || !event.end?.dateTime) continue;
+        events.push({
+          start: new Date(event.start.dateTime),
+          end: new Date(event.end.dateTime),
+          title: event.summary ?? "Busy",
+          accountEmail: account.email,
+        });
+      }
+    } catch (error) {
+      console.error(`Failed to fetch events for ${account.email}:`, error);
+    }
+  }
+
+  return events;
+}
+
+// Attendee response status type
+export type AttendeeStatus =
+  | "accepted"
+  | "declined"
+  | "tentative"
+  | "needsAction"
+  | "unknown";
+
+// Get event attendee status fronm Google Calendar
+export async function getEventAttendeeStatus(
+  account: ConnectedAccountWithTokens,
+  eventId: string,
+  _hostEmail: string,
+  guestEmail: string,
+): Promise<{ hostStatus: AttendeeStatus; guestStatus: AttendeeStatus }> {
+  try {
+    const calendar = await getCalendarClient(account);
+    const response = await calendar.events.get({
+      calendarId: "primary",
+      eventId,
+    });
+
+    const guestAttendee = response.data.attendees?.find(
+      (a) => a.email?.toLowerCase() === guestEmail.toLowerCase(),
+    );
+
+    return {
+      // Host is the organizer, so if event exists, they accepted it
+      hostStatus: "accepted",
+      guestStatus:
+        (guestAttendee?.responseStatus as AttendeeStatus) || "needsAction",
+    };
+  } catch (error: unknown) {
+    // If event was deleted (404/410) treat as cancelled
+    // Google API returns error code in different formats
+    const gaxiosError = error as {
+      code?: number;
+      response?: { status?: number };
+    };
+    const errorCode = gaxiosError.code ?? gaxiosError.response?.status;
+    if (errorCode === 404 || errorCode === 410) {
+      return { hostStatus: "declined", guestStatus: "declined" };
+    }
+    console.error("Failed to get event attendee statuses:", error);
+    // On error, assume event still exists but status unknown
+    return { hostStatus: "accepted", guestStatus: "unknown" };
+  }
 }

@@ -482,25 +482,16 @@
         "startDateTime": {
           "type": "objectAttribute",
           "value": {
-            "type": "object",
-            "attributes": {
-              "startDateTime": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string"
-                },
-                "optional": false
-              },
-              "endDateTime": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string"
-                },
-                "optional": false
-              }
-            }
+            "type": "string"
           },
-          "optional": true
+          "optional": false
+        },
+        "endDateTime": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": false
         }
       }
     }

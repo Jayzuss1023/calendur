@@ -101,7 +101,7 @@ export async function GET(request: NextRequest) {
             tokens.access_token,
           [`connectedAccounts[accountId=="${googleUser.id}"].refreshToken`]:
             tokens.refresh_token || existingAccount,
-          [`connectedAccounts[accountId=="${googleUser.id}"].expireyDate`]:
+          [`connectedAccounts[accountId=="${googleUser.id}"].expiryDate`]:
             tokens.expiry_date,
         })
         .commit();
@@ -123,7 +123,7 @@ export async function GET(request: NextRequest) {
           email: googleUser.email,
           provider: "google",
           accessToken: tokens.access_token,
-          refreshToken: tokens.refresh_token,
+          refreshToken: tokens.refresh_token || "",
           expiryDate: tokens.expiry_date || 0,
           isDefault: isFirstAccount, // First account is default
           connectedAt: new Date().toISOString,

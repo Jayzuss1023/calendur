@@ -96,10 +96,8 @@ export type ConnectedAccount = {
 
 export type AvailabilitySlot = {
   _type: "availabilitySlot";
-  startDateTime?: {
-    startDateTime: string;
-    endDateTime: string;
-  };
+  startDateTime: string;
+  endDateTime: string;
 };
 
 export type User = {
@@ -346,11 +344,8 @@ export type USER_BY_CLERK_ID_QUERYResult = {
   slug: Slug | null;
   availability: Array<{
     _key: string;
-    startDateTime: {
-      startDateTime: string;
-      endDateTime: string;
-    } | null;
-    endDateTime: null;
+    startDateTime: string;
+    endDateTime: string;
   }> | null;
   connectedAccounts: Array<{
     _key: string;
@@ -371,11 +366,8 @@ export type USER_BY_SLUG_QUERYResult = {
   slug: Slug | null;
   availability: Array<{
     _key: string;
-    startDateTime: {
-      startDateTime: string;
-      endDateTime: string;
-    } | null;
-    endDateTime: null;
+    startDateTime: string;
+    endDateTime: string;
   }> | null;
 } | null;
 // Variable: USER_WITH_TOKENS_QUERY
@@ -408,11 +400,8 @@ export type USER_WITH_AVAILABILITY_QUERYResult = {
   _id: string;
   availability: Array<{
     _key: string;
-    startDateTime: {
-      startDateTime: string;
-      endDateTime: string;
-    } | null;
-    endDateTime: null;
+    startDateTime: string;
+    endDateTime: string;
   }> | null;
 } | null;
 // Variable: USER_WITH_CONNECTED_ACCOUNTS_QUERY
@@ -432,11 +421,8 @@ export type HOST_BY_SLUG_WITH_TOKENS_QUERYResult = {
   slug: Slug | null;
   availability: Array<{
     _key: string;
-    startDateTime: {
-      startDateTime: string;
-      endDateTime: string;
-    } | null;
-    endDateTime: null;
+    startDateTime: string;
+    endDateTime: string;
   }> | null;
   connectedAccounts: Array<{
     _key: string;
