@@ -1,8 +1,8 @@
 // Time bloc representing availability
 export interface TimeBlock {
   id: string;
-  start: Date | null;
-  end: Date | null;
+  start: Date;
+  end: Date;
 }
 
 // Google Calendar busy block (read-only)
