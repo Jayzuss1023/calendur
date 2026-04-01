@@ -194,3 +194,13 @@ export const USER_SLUG_QUERY = defineQuery(`*[
   name,
   slug
 }`);
+
+/**
+ * Check if the current user has at least one connected Google account
+ */
+export const HAS_CONNECTED_ACCOUNT_QUERY = defineQuery(`count(*[
+  _type == "user"
+  && clerkId == $clerkId
+  && defined(connectedAccounts)
+  && length(connectedAccounts) > 0
+]) > 0`);

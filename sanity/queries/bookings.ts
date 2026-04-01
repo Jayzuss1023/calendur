@@ -158,3 +158,10 @@ export const ALL_BOOKINGS_BY_HOST_SLUG_QUERY = defineQuery(`*[
     googleEventId,
     guestEmail
   }`);
+
+export const COUNT_USER_BOOKINGS_QUERY = defineQuery(`count(*[
+  _type == "booking"
+  && host->clerkId == $clerkId
+  && startTime >= $monthStart
+  && startTime < $monthEnd
+])`);

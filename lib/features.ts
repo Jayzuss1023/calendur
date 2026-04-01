@@ -36,3 +36,11 @@ export async function getUserPlanLimits() {
   const plan = await getUserPlan();
   return { ...PLAN_LIMITS[plan], plan };
 }
+
+export type BookingQuotaStatus = {
+  used: number;
+  limit: number;
+  remaining: number;
+  isExceeded: boolean;
+  plan: PlanType;
+};
