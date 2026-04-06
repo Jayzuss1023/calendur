@@ -168,6 +168,20 @@ export const HOST_BY_SLUG_WITH_TOKENS_QUERY = defineQuery(`*[
   }
 }`);
 
+// Query to get host's clerkId by their public slug
+export const HOST_CLERK_ID_BY_SLUG_QUERY = `*[
+  _type == "user"
+  && slug.current == $hostSlug
+][0].clerkId`;
+
+// Query to count bookings for a host in a date range
+export const COUNT_HOST_BOOKINGS_QUERY = `count(*[
+  _type == "booking"
+  && host->slug.current == $hostSlug
+  && startTime >= $monthStart
+  && startTime < $monthEnd
+])`;
+
 /**
  * Get connected accounts for display (without sensitive tokens) - for Sanity Live
  */

@@ -8,11 +8,6 @@ import { getGoogleBusyTimes } from "@/lib/actions/calendar";
 import { AvailabilityCalendar } from "@/components/calendar/components/availability-calendar";
 import { processBookingsWithStatuses } from "@/lib/booking-utils";
 import { BookedBlock, BusyBlock, TimeBlock } from "@/components/calendar/types";
-import {
-  HOST_UPCOMING_BOOKINGS_QUERYResult,
-  USER_WITH_AVAILABILITY_QUERYResult,
-} from "@/sanity.types";
-
 import { ShareLinkDialog } from "@/components/calendar/components/share-link-dialog";
 import { RefreshButton } from "@/components/ui/refresh-button";
 
@@ -129,7 +124,6 @@ export default async function AvailabilityPage() {
           <ShareLinkDialog />
         </div>
       </div>
-      {/* <AvailabilityCalendar /> */}
       <AvailabilityCalendar
         initialBlocks={initialBlocks}
         busyBlocks={initialBusyBlocks}

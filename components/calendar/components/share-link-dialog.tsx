@@ -33,7 +33,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   getMeetingTypes,
-  //   createMeetingType,
   getBookingLinkWithMeetingType,
   getBookingQuota,
   hasConnectedAccount,
@@ -41,7 +40,6 @@ import {
 } from "@/lib/actions/availability";
 import type { MeetingTypeForHost } from "@/sanity/queries/meetingTypes";
 import type { BookingQuotaStatus } from "@/lib/features";
-import { defineDocumentInspector } from "sanity";
 
 type MeetingDuration = 15 | 30 | 45 | 60 | 90;
 
@@ -83,6 +81,7 @@ export function ShareLinkDialog() {
           setQuota(quotaStatus);
           setHasAccount(accountConnected);
 
+          //   Do not proceed with booking URL without account
           if (!accountConnected) {
             return;
           }
@@ -113,7 +112,14 @@ export function ShareLinkDialog() {
   };
 
   const handleMeetingTypeChange = (typeId: string) => {
-    console.log("handling change");
+    const type = meetingTypes.find((t) => t._id === typeId);
+    if (type) {
+      setSelectedMeetingType(type);
+      startTransition(async () => {
+        const result = await getBookingLinkWithMeetingType(type.slug ?? "");
+        setBookingUrl(result.url);
+      });
+    }
   };
 
   const handleCreateMeetingType = () => {
