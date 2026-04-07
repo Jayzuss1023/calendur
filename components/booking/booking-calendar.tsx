@@ -119,6 +119,7 @@ export function BookingCalendar({
           guestEmail,
           notes: notes || undefined,
         });
+        setStep("confirmed");
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Failed to create booking",

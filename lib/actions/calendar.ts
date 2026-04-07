@@ -12,7 +12,7 @@ import { BOOKING_WITH_HOST_CALENDAR_QUERY } from "@/sanity/queries/bookings";
 import {
   getCalendarClient,
   revokeGoogleToken,
-  getEventAttendeeStatus,
+  getEventAttendeeStatuses,
   fetchCalendarEvents,
   type AttendeeStatus,
 } from "@/lib/google-calendar";
@@ -266,7 +266,7 @@ export async function getBookingAttendeeStatuses(
   await Promise.all(
     bookingsWithEvents.map(async (booking) => {
       if (booking.googleEventId) {
-        const { hostStatus, guestStatus } = await getEventAttendeeStatus(
+        const { hostStatus, guestStatus } = await getEventAttendeeStatuses(
           account,
           booking.googleEventId,
           hostEmail,
@@ -346,7 +346,7 @@ export async function getActivebookingIds(
           isDefault: true,
         };
 
-        const { hostStatus, guestStatus } = await getEventAttendeeStatus(
+        const { hostStatus, guestStatus } = await getEventAttendeeStatuses(
           account,
           booking.googleEventId,
           hostAccount.email,

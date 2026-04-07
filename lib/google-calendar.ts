@@ -196,8 +196,34 @@ export type AttendeeStatus =
   | "needsAction"
   | "unknown";
 
-// Get event attendee status fronm Google Calendar
+// Attendees status from Google Calendar
 export async function getEventAttendeeStatus(
+  account: ConnectedAccountWithTokens,
+  eventId: string,
+  guestEmail: string,
+) {
+  try {
+    const calendar = await getCalendarClient(account);
+    const response = await calendar.events.get({
+      calendarId: "primary",
+      eventId,
+    });
+    const attendee = response.data.attendees?.find(
+      (a) => a.email?.toLowerCase() === guestEmail.toLowerCase(),
+    );
+
+    if (!attendee?.responseStatus) {
+      return "unknown";
+    }
+
+    return attendee.responseStatus as AttendeeStatus;
+  } catch (error) {
+    console.error("Failed to get event attendee status:", error);
+    return "unkown";
+  }
+}
+// Get event attendee status fronm Google Calendar
+export async function getEventAttendeeStatuses(
   account: ConnectedAccountWithTokens,
   eventId: string,
   _hostEmail: string,
