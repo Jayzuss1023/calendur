@@ -35,8 +35,12 @@ export function CopyDayPopover({ onCopy }: CopyDayPopoverProps) {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger>
-        <Button>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          className="max-sm:h-8 max-sm:w-8 max-sm:p-0"
+        >
           <Copy className="h-4 w-4 sm:mr-1" />
         </Button>
       </PopoverTrigger>

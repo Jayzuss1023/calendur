@@ -128,6 +128,48 @@ export function BookingCalendar({
     });
   };
 
+  if (step === "confirmed" && selectedSlot) {
+    return (
+      <Card className="overflow-hidden">
+        <CardContent className="p-8 text-center">
+          <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 mb-6">
+            <Check className="h-8 w-8" />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+            Booking confirmed!
+          </h2>
+          <p className="text-slate-600 dark:text-slate-400 mb-4">
+            Your {meetingTypeName} with {hostName} has been scheduled.
+          </p>
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-green-100 dark:bg-green-900/30 px-3 py-1 text-sm font-medium text-green-700 dark:text-green-300 mb-6">
+            <Clock className="h-3.5 w-3.5" />
+            {duration} minutes
+          </div>
+          <div className="rounded-lg bg-slate-50 dark:bg-slate-800 p-4 text-left max-w-sm mx-auto">
+            <div className="flex items-center gap-3 mb-3">
+              <Clock className="h-5 w-5 text-slate-400" />
+              <div>
+                <p className="font-medium text-slate-900 dark:text-white">
+                  {format(selectedSlot.start, "EEEE, MMMM d, yyyy")}
+                </p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  {format(selectedSlot.start, "h:mm a")} -{" "}
+                  {format(selectedSlot.end, "h:mm a")}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Mail className="h-5 w-5 text-slate-400" />
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                Confirmation sent to {guestEmail}
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   // Details Form
   if (step === "enter-details" && selectedSlot) {
     return (
