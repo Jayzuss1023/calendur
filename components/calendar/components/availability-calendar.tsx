@@ -1,57 +1,55 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
-import { Calendar, Views, type View } from "react-big-calendar";
+import { differenceInMinutes, format, isBefore, startOfDay } from "date-fns";
+import {
+  Clock,
+  ExternalLink,
+  Loader2,
+  Mail,
+  Save,
+  Undo2,
+  User,
+  Video,
+} from "lucide-react";
+import type React from "react";
+import { useState, useTransition } from "react";
+import { Calendar, type View, Views } from "react-big-calendar";
 import withDragAndDrop, {
   type EventInteractionArgs,
 } from "react-big-calendar/lib/addons/dragAndDrop";
-import {
-  Loader2,
-  Save,
-  Undo2,
-  Clock,
-  User,
-  Mail,
-  Video,
-  ExternalLink,
-} from "lucide-react";
-import { format, differenceInMinutes, isBefore, startOfDay } from "date-fns";
-
-import { localizer } from "../lib/localizer";
-
-import {
-  CALENDAR_CONFIG,
-  MAX_TIME,
-  MIN_TIME,
-  AVAILABILITY_COLORS,
-  BUSY_BLOCK_COLORS,
-  BOOKING_STATUS_COLORS,
-} from "../lib/constants";
-
-import {
-  calendarFormats,
-  calendarMessages,
-  formatTimeRange,
-} from "../lib/formats";
-import { useCalendarEvents } from "../hooks/use-calendar-events";
-import { CalendarToolbar } from "./calendar-toolbar";
+import type {
+  BookedBlock,
+  BusyBlock,
+  CalendarEvent,
+  SlotInfo,
+  TimeBlock,
+  TimeBlockInteraction,
+} from "@/components/calendar/types";
+import { isBookedBlock, isBusyBlock } from "@/components/calendar/types";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { saveAvailability } from "@/lib/actions/availability";
-import type {
-  TimeBlock,
-  BusyBlock,
-  BookedBlock,
-  CalendarEvent,
-  TimeBlockInteraction,
-  SlotInfo,
-} from "@/components/calendar/types";
-import { isBusyBlock, isBookedBlock } from "@/components/calendar/types";
+import { useCalendarEvents } from "../hooks/use-calendar-events";
+import {
+  AVAILABILITY_COLORS,
+  BOOKING_STATUS_COLORS,
+  BUSY_BLOCK_COLORS,
+  CALENDAR_CONFIG,
+  MAX_TIME,
+  MIN_TIME,
+} from "../lib/constants";
+import {
+  calendarFormats,
+  calendarMessages,
+  formatTimeRange,
+} from "../lib/formats";
+import { localizer } from "../lib/localizer";
+import { CalendarToolbar } from "./calendar-toolbar";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
@@ -292,11 +290,11 @@ export function AvailabilityCalendar({
               >
                 {selectedBooking.attendeeStatus === "declined" &&
                   "Guest Declined"}
-                {selectedBooking.attendeeStatus == "tentative" &&
+                {selectedBooking.attendeeStatus === "tentative" &&
                   "Guest Tentative"}
-                {selectedBooking.attendeeStatus == "accepted" &&
+                {selectedBooking.attendeeStatus === "accepted" &&
                   "Guest Accepted"}
-                {selectedBooking.attendeeStatus == "needsAction" &&
+                {selectedBooking.attendeeStatus === "needsAction" &&
                   "Guest: Awaiting Response"}
                 {!selectedBooking.attendeeStatus && "Guest Status Unknown"}
               </div>

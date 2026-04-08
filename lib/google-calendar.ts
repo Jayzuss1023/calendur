@@ -1,9 +1,9 @@
 import { google } from "googleapis";
-import { writeClient } from "@/sanity/lib/writeClient";
 import { client } from "@/sanity/lib/client";
+import { writeClient } from "@/sanity/lib/writeClient";
 import {
-  USER_ID_BY_ACCOUNT_KEY_QUERY,
   type ConnectedAccountWithTokens,
+  USER_ID_BY_ACCOUNT_KEY_QUERY,
 } from "@/sanity/queries/user";
 
 // OAuth2 client configuration

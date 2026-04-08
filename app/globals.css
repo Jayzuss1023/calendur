@@ -149,12 +149,11 @@
   display: none;
 }
 /* Day headers in week/day views */
-.rbc-time-view .rbc-row.rbc-time-header-cell .rbc-header,
-.rbc-time-view .rbc-header {
-  border-bottom: 1px solid var(--border) !important;
-  padding: 16px 8px !important;
-  font-size: 1rem !important;
-  font-weight: 600 !important;
+.rbc-time-view .rbc-row.rbc-time-header-cell .rbc-header {
+  border-bottom: 1px solid var(--border);
+  padding: 16px 8px;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 /* Mobile responsive calendar styles */
@@ -171,20 +170,14 @@
   /* Consistent time gutter width on mobile */
   .rbc-time-gutter,
   .rbc-time-header-gutter {
-    min-width: 50px !important;
-    max-width: 50px !important;
-    flex: 0 0 50px !important;
+    min-width: 50px;
+    max-width: 50px;
+    flex: 0 0 50px;
   }
 
   .rbc-time-gutter .rbc-label {
     font-size: 0.65rem;
     padding: 0 4px;
-  }
-
-  /* Smaller day headers */
-  .rbc-time-view .rbc-header {
-    font-size: 0.7rem !important;
-    padding: 8px 2px !important;
   }
 
   /* Compact events on mobile */

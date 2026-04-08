@@ -1,5 +1,5 @@
-import { defineField, defineType } from "sanity";
 import { ClockIcon } from "@sanity/icons";
+import { defineField, defineType } from "sanity";
 
 export const availabilitySlotType = defineType({
   name: "availabilitySlot",

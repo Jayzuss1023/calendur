@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { ArrowRight, Loader2, Plus, Star, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { Button } from "@/components/ui/button";
 import {
   disconnectGoogleAccount,
   setDefaultCalendarAccount,
 } from "@/lib/actions/calendar";
-import type { ConnectedAccountDisplay } from "@/sanity/queries/user";
 import type { PlanType } from "@/lib/features";
+import type { ConnectedAccountDisplay } from "@/sanity/queries/user";
 
 interface AccountManagerProps {
   connectedAccounts: ConnectedAccountDisplay[];

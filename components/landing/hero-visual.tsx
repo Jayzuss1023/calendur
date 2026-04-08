@@ -20,7 +20,7 @@ export function HeroVisual() {
               <div className="space-y-2">
                 {[...Array(5)].map((_, i) => (
                   <div
-                    key={i}
+                    key={`hero-${i++}`}
                     className="flex items-center gap-2 rounded-lg border bg-white p-3 dark:bg-zinc-800"
                   >
                     <div className="size-8 rounded-full bg-blue-500/20" />
@@ -43,7 +43,7 @@ export function HeroVisual() {
               <div className="grid grid-cols-7 gap-1">
                 {[...Array(35)].map((_, i) => (
                   <div
-                    key={i}
+                    key={`hero-visial-${i++}`}
                     className={`aspect-square rounded ${
                       [8, 9, 15, 16, 22, 23, 29, 30].includes(i)
                         ? "bg-green-500/30"

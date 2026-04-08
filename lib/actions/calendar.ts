@@ -1,21 +1,20 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
-import { writeClient } from "@/sanity/lib/writeClient";
-import { client } from "@/sanity/lib/client";
 import {
-  HostWithTokens,
-  USER_WITH_TOKENS_QUERY,
-  type ConnectedAccountWithTokens,
-} from "@/sanity/queries/user";
+  type AttendeeStatus,
+  fetchCalendarEvents,
+  getCalendarClient,
+  getEventAttendeeStatuses,
+  revokeGoogleToken,
+} from "@/lib/google-calendar";
+import { client } from "@/sanity/lib/client";
+import { writeClient } from "@/sanity/lib/writeClient";
 import { BOOKING_WITH_HOST_CALENDAR_QUERY } from "@/sanity/queries/bookings";
 import {
-  getCalendarClient,
-  revokeGoogleToken,
-  getEventAttendeeStatuses,
-  fetchCalendarEvents,
-  type AttendeeStatus,
-} from "@/lib/google-calendar";
+  type ConnectedAccountWithTokens,
+  USER_WITH_TOKENS_QUERY,
+} from "@/sanity/queries/user";
 
 // ============================================================================
 // Types

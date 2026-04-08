@@ -1,5 +1,5 @@
-import { Check, X, Loader2 } from "lucide-react";
 import { PricingTable } from "@clerk/nextjs";
+import { Check, Loader2, X } from "lucide-react";
 import { LandingHeader } from "@/components/landing/landing-header";
 import { cn } from "@/lib/utils";
 

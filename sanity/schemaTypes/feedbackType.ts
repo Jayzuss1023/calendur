@@ -1,5 +1,5 @@
-import { defineType, defineField } from "sanity";
 import { CommentIcon } from "@sanity/icons";
+import { defineField, defineType } from "sanity";
 
 export const feedbackType = defineType({
   name: "feedback",

@@ -1,22 +1,20 @@
-import { notFound } from "next/navigation";
+import { parseISO, startOfDay } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import { cookies } from "next/headers";
-import { sanityFetch } from "@/sanity/lib/live";
-import { MEETING_TYPES_BY_HOST_SLUG_QUERYResult } from "@/sanity.types";
-import { ALL_BOOKINGS_BY_HOST_SLUG_QUERY } from "@/sanity/queries/bookings";
+import { notFound } from "next/navigation";
+import { BookingCalendar } from "@/components/booking/booking-calendar";
+import { HostHeader } from "@/components/booking/host-header";
+import { QuotaExceeded } from "@/components/booking/quota-exceeded";
+import { getGoogleBusyTimes } from "@/lib/actions/bookings";
+import { getActivebookingIds } from "@/lib/actions/calendar";
 import {
   computeAvailableDates,
   computeAvailableSlots,
 } from "@/lib/availability";
-
-import { getGoogleBusyTimes } from "@/lib/actions/bookings";
 import { getHostBookingQuotaStatus } from "@/lib/features";
-import { HostHeader } from "@/components/booking/host-header";
-import { BookingCalendar } from "@/components/booking/booking-calendar";
-import { startOfDay, parseISO } from "date-fns";
-import { formatInTimeZone } from "date-fns-tz";
+import { sanityFetch } from "@/sanity/lib/live";
+import { ALL_BOOKINGS_BY_HOST_SLUG_QUERY } from "@/sanity/queries/bookings";
 import { MEETING_TYPE_BY_SLUGS_QUERY } from "@/sanity/queries/meetingTypes";
-import { QuotaExceeded } from "@/components/booking/quota-exceeded";
-import { getActivebookingIds } from "@/lib/actions/calendar";
 
 interface BookingPageProps {
   params: Promise<{ slug: string; meetingType: string }>;

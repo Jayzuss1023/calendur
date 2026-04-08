@@ -1,6 +1,6 @@
-import Link from "next/link";
+import { Show, SignInButton, SignUpButton } from "@clerk/nextjs";
 import { Sparkles } from "lucide-react";
-import { SignInButton, SignUpButton, Show } from "@clerk/nextjs";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { HeroVisual } from "./hero-visual";
 

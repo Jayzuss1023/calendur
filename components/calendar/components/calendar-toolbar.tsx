@@ -1,10 +1,10 @@
 "use client";
 
-import type { ToolbarProps, View } from "react-big-calendar";
 import { ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
+import type { ToolbarProps, View } from "react-big-calendar";
 import { Button } from "@/components/ui/button";
-import { CopyDayPopover } from "./copy-day-popover";
 import type { TimeBlock } from "../types";
+import { CopyDayPopover } from "./copy-day-popover";
 
 interface CustomToolbarProps {
   onCopyDayToWeek?: (dayIndex: number, includeWeekends: boolean) => void;

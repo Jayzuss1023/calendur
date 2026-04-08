@@ -1,20 +1,20 @@
 "use server";
 
+import { parseISO } from "date-fns";
+import { client } from "@/sanity/lib/client";
+import { writeClient } from "@/sanity/lib/writeClient";
+import { BOOKINGS_IN_RANGE_QUERY } from "@/sanity/queries/bookings";
+import { MEETING_TYPE_BY_SLUGS_QUERY } from "@/sanity/queries/meetingTypes";
 import {
   HOST_BY_SLUG_WITH_TOKENS_QUERY,
-  HostWithTokens,
+  type HostWithTokens,
 } from "@/sanity/queries/user";
+import { getHostBookingQuotaStatus } from "../features";
 import {
   fetchCalendarEvents,
   getCalendarClient,
   getEventAttendeeStatus,
 } from "../google-calendar";
-import { client } from "@/sanity/lib/client";
-import { getHostBookingQuotaStatus } from "../features";
-import { MEETING_TYPE_BY_SLUGS_QUERY } from "@/sanity/queries/meetingTypes";
-import { BOOKINGS_IN_RANGE_QUERY } from "@/sanity/queries/bookings";
-import { parseISO } from "date-fns";
-import { writeClient } from "@/sanity/lib/writeClient";
 
 export type BookingData = {
   hostSlug: string;

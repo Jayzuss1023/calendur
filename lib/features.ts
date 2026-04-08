@@ -1,11 +1,11 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
+import { endOfMonth, startOfMonth } from "date-fns";
+
 import { client } from "@/sanity/lib/client";
-import { startOfMonth, endOfMonth } from "date-fns";
 import {
   COUNT_HOST_BOOKINGS_QUERY,
   HOST_CLERK_ID_BY_SLUG_QUERY,
 } from "@/sanity/queries/user";
-import { userAgentFromString } from "next/server";
 
 export type PlanType = "free" | "starter" | "pro";
 

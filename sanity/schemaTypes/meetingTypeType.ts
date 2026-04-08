@@ -1,5 +1,5 @@
-import { defineField, defineType } from "sanity";
 import { Clock } from "lucide-react";
+import { defineField, defineType } from "sanity";
 
 export const meetingTypeType = defineType({
   name: "meetingType",

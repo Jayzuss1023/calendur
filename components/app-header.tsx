@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import { Calendar, CalendarCheck, MessageSquare, Settings } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const leftNavItems = [

@@ -1,15 +1,19 @@
 import { auth } from "@clerk/nextjs/server";
+import { addWeeks, startOfWeek } from "date-fns";
 import { redirect } from "next/navigation";
-import { startOfWeek, addWeeks } from "date-fns";
-import { sanityFetch } from "@/sanity/lib/live";
-import { USER_WITH_AVAILABILITY_QUERY } from "@/sanity/queries/user";
-import { HOST_UPCOMING_BOOKINGS_QUERY } from "@/sanity/queries/bookings";
-import { getGoogleBusyTimes } from "@/lib/actions/calendar";
 import { AvailabilityCalendar } from "@/components/calendar/components/availability-calendar";
-import { processBookingsWithStatuses } from "@/lib/booking-utils";
-import { BookedBlock, BusyBlock, TimeBlock } from "@/components/calendar/types";
 import { ShareLinkDialog } from "@/components/calendar/components/share-link-dialog";
+import type {
+  BookedBlock,
+  BusyBlock,
+  TimeBlock,
+} from "@/components/calendar/types";
 import { RefreshButton } from "@/components/ui/refresh-button";
+import { getGoogleBusyTimes } from "@/lib/actions/calendar";
+import { processBookingsWithStatuses } from "@/lib/booking-utils";
+import { sanityFetch } from "@/sanity/lib/live";
+import { HOST_UPCOMING_BOOKINGS_QUERY } from "@/sanity/queries/bookings";
+import { USER_WITH_AVAILABILITY_QUERY } from "@/sanity/queries/user";
 
 export default async function AvailabilityPage() {
   const { userId } = await auth();

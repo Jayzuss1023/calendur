@@ -1,18 +1,19 @@
 "use client";
 
-import { useState, useTransition } from "react";
 import {
-  Share2,
-  Copy,
+  CalendarDays,
   Check,
+  Clock,
+  Copy,
   ExternalLink,
+  LinkIcon,
   Loader2,
   Plus,
-  Clock,
-  CalendarDays,
-  LinkIcon,
+  Share2,
 } from "lucide-react";
 import Link from "next/link";
+import { useState, useTransition } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +22,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -28,18 +31,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
-  getMeetingTypes,
+  createMeetingType,
   getBookingLinkWithMeetingType,
   getBookingQuota,
+  getMeetingTypes,
   hasConnectedAccount,
-  createMeetingType,
 } from "@/lib/actions/availability";
-import type { MeetingTypeForHost } from "@/sanity/queries/meetingTypes";
 import type { BookingQuotaStatus } from "@/lib/features";
+import type { MeetingTypeForHost } from "@/sanity/queries/meetingTypes";
 
 type MeetingDuration = 15 | 30 | 45 | 60 | 90;
 
@@ -255,7 +255,9 @@ export function ShareLinkDialog() {
                   <Select
                     value={newTypeDuration.toString()}
                     onValueChange={(v) =>
-                      setNewTypeDuration(Number.parseInt(v) as MeetingDuration)
+                      setNewTypeDuration(
+                        Number.parseInt(v, 10) as MeetingDuration,
+                      )
                     }
                   >
                     <SelectTrigger id="meeting-duration">

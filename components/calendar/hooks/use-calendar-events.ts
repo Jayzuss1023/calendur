@@ -1,8 +1,8 @@
 "use client";
 
+import { addDays, endOfDay, set, startOfDay, startOfWeek } from "date-fns";
 import { useState } from "react";
-import { startOfDay, endOfDay, startOfWeek, addDays, set } from "date-fns";
-import type { TimeBlock, TimeBlockInteraction, SlotInfo } from "../types";
+import type { SlotInfo, TimeBlock, TimeBlockInteraction } from "../types";
 
 // Helper: check if two blocks overlap or touch
 const blocksOverlapOrTouch = (a: TimeBlock, b: TimeBlock): boolean => {

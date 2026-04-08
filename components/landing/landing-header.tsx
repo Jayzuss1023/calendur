@@ -1,9 +1,9 @@
 "use client";
-import Link from "next/link";
+import { Show, SignInButton, SignUpButton } from "@clerk/nextjs";
 import { Calendar } from "lucide-react";
-import { SignInButton, SignUpButton, Show } from "@clerk/nextjs";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export function LandingHeader() {
   const pathname = usePathname();

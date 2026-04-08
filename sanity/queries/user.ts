@@ -9,9 +9,9 @@
 
 import { defineQuery } from "next-sanity";
 import type {
-  USER_WITH_TOKENS_QUERYResult,
   HOST_BY_SLUG_WITH_TOKENS_QUERYResult,
   USER_CONNECTED_ACCOUNTS_DISPLAY_QUERYResult,
+  USER_WITH_TOKENS_QUERYResult,
 } from "@/sanity.types";
 
 // Derived type from USER_WITH_TOKENS_QUERY result

@@ -1,9 +1,12 @@
-import { HostBooking, HostUpcomingBooking } from "@/sanity/queries/bookings";
+import type {
+  HostBooking,
+  HostUpcomingBooking,
+} from "@/sanity/queries/bookings";
 import {
-  BookingStatuses,
+  type BookingStatuses,
   getBookingAttendeeStatuses,
 } from "./actions/calendar";
-import { AttendeeStatus } from "./google-calendar";
+import type { AttendeeStatus } from "./google-calendar";
 
 export type BookingWithGoogleEvent = Pick<
   HostBooking | HostUpcomingBooking,

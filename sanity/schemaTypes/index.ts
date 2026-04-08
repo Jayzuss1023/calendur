@@ -1,10 +1,10 @@
-import { type SchemaTypeDefinition } from "sanity";
-import { userType } from "./userType";
+import type { SchemaTypeDefinition } from "sanity";
 import { availabilitySlotType } from "./availabilitySlotType";
-import { connectedAccountType } from "./connectedAccountType";
 import { bookingType } from "./bookingType";
-import { meetingTypeType } from "./meetingTypeType";
+import { connectedAccountType } from "./connectedAccountType";
 import { feedbackType } from "./feedbackType";
+import { meetingTypeType } from "./meetingTypeType";
+import { userType } from "./userType";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [

@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { Copy } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
@@ -15,8 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { DAYS_OF_WEEK } from "../lib/constants";
 
 interface CopyDayPopoverProps {

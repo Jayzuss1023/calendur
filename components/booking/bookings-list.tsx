@@ -1,24 +1,24 @@
 "use client";
 
-import { useTransition, useState } from "react";
 import { format, isFuture, isToday } from "date-fns";
 import {
+  AlertCircle,
   Calendar,
+  CheckCircle2,
   Clock,
-  User,
+  Loader2,
   Mail,
   MessageSquare,
-  X,
-  Loader2,
+  User,
   Video,
-  CheckCircle2,
-  AlertCircle,
+  X,
 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { useState, useTransition } from "react";
+import type { AttendeeStatus } from "@/components/calendar/types";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { cancelBooking } from "@/lib/actions/calendar";
 import type { HostBooking } from "@/sanity/queries/bookings";
-import type { AttendeeStatus } from "@/components/calendar/types";
 
 type BookingWithStatuses = HostBooking & {
   guestStatus?: AttendeeStatus;

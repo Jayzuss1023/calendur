@@ -1,13 +1,13 @@
-import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
+
+import { type NextRequest, NextResponse } from "next/server";
 import {
   exchangeCodeForTokens,
   getGoogleUserInfo,
 } from "@/lib/google-calendar";
-import { writeClient } from "@/sanity/lib/writeClient";
 import { client } from "@/sanity/lib/client";
+import { writeClient } from "@/sanity/lib/writeClient";
 import { USER_WITH_CONNECTED_ACCOUNTS_QUERY } from "@/sanity/queries/user";
-import { google } from "googleapis";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;

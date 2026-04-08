@@ -7,7 +7,6 @@ import {
   parseISO,
   startOfDay,
 } from "date-fns";
-import { parse } from "path";
 
 export type AvailabilitySlot = {
   _key: string;

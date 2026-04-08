@@ -1,5 +1,5 @@
-import { defineField, defineType } from "sanity";
 import { PlugIcon } from "@sanity/icons";
+import { defineField, defineType } from "sanity";
 
 export const connectedAccountType = defineType({
   name: "connectedAccount",

@@ -1,22 +1,22 @@
 "use server";
-import { TimeBlock } from "@/components/calendar/types";
+import { auth, currentUser } from "@clerk/nextjs/server";
+import { endOfMonth, startOfMonth } from "date-fns";
+import type { TimeBlock } from "@/components/calendar/types";
 import { client } from "@/sanity/lib/client";
 import { sanityFetch } from "@/sanity/lib/live";
 import { writeClient } from "@/sanity/lib/writeClient";
+import { COUNT_USER_BOOKINGS_QUERY } from "@/sanity/queries/bookings";
 import {
   HOST_ID_BY_CLERK_ID_QUERY,
   MEETING_TYPES_BY_HOST_QUERY,
-  MeetingTypeForHost,
+  type MeetingTypeForHost,
 } from "@/sanity/queries/meetingTypes";
 import {
   HAS_CONNECTED_ACCOUNT_QUERY,
   USER_ID_BY_CLERK_ID_QUERY,
   USER_SLUG_QUERY,
 } from "@/sanity/queries/user";
-import { auth, currentUser } from "@clerk/nextjs/server";
-import { BookingQuotaStatus, getUserPlan, PLAN_LIMITS } from "../features";
-import { endOfMonth, startOfMonth } from "date-fns";
-import { COUNT_USER_BOOKINGS_QUERY } from "@/sanity/queries/bookings";
+import { type BookingQuotaStatus, getUserPlan, PLAN_LIMITS } from "../features";
 import { generateSlug, getBaseUrl } from "../urls";
 
 type MeetingDuration = 15 | 30 | 45 | 60 | 90;

@@ -1,6 +1,6 @@
-import { dateFnsLocalizer } from "react-big-calendar";
 import { format, getDay, parse, startOfWeek } from "date-fns";
 import { enUS } from "date-fns/locale";
+import { dateFnsLocalizer } from "react-big-calendar";
 
 // Week starts on Monday (1) for most of the World
 // Sunday (0) form US, Canada, Japan

@@ -1,5 +1,5 @@
-import { defineField, defineType, defineArrayMember } from "sanity";
 import { UserIcon } from "@sanity/icons";
+import { defineArrayMember, defineField, defineType } from "sanity";
 
 export const userType = defineType({
   name: "user",
