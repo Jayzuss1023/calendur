@@ -75,6 +75,7 @@ export function AvailabilityCalendar({
     null,
   );
   const [isSaving, startSaveTransition] = useTransition();
+  console.log(selectedBooking?.attendeeStatus);
 
   const {
     events,
@@ -260,7 +261,7 @@ export function AvailabilityCalendar({
       >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
               <div
                 className={`h-3 w-3 rounded-full ${
                   selectedBooking?.attendeeStatus === "declined"

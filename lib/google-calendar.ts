@@ -5,9 +5,8 @@ import {
   USER_ID_BY_ACCOUNT_KEY_QUERY,
   type ConnectedAccountWithTokens,
 } from "@/sanity/queries/user";
-import { oauth2 } from "googleapis/build/src/apis/oauth2";
 
-// OAuth2 client config
+// OAuth2 client configuration
 export function createOAuth2Client() {
   return new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
@@ -16,7 +15,7 @@ export function createOAuth2Client() {
   );
 }
 
-// Generate OAAuth URL for connecting a Google account
+// Generate OAuth URL for connecting a Google account
 export function getGoogleAuthUrl(state: string) {
   const oauth2Client = createOAuth2Client();
 
@@ -30,12 +29,12 @@ export function getGoogleAuthUrl(state: string) {
   return oauth2Client.generateAuthUrl({
     access_type: "offline",
     scope: scopes,
-    prompt: "select_account consent", // Force account picket and consent
+    prompt: "select_account consent", // Force account picker and consent
     state,
   });
 }
 
-// Exhange authorization code for tokens
+// Exchange authorization code for tokens
 export async function exchangeCodeForTokens(code: string) {
   const oauth2Client = createOAuth2Client();
   const { tokens } = await oauth2Client.getToken(code);
@@ -44,12 +43,11 @@ export async function exchangeCodeForTokens(code: string) {
 
 // Get Google user info (email, id, name)
 export async function getGoogleUserInfo(accessToken: string) {
-  const oauth2Client = await createOAuth2Client();
+  const oauth2Client = createOAuth2Client();
   oauth2Client.setCredentials({ access_token: accessToken });
 
   const oauth2 = google.oauth2({ version: "v2", auth: oauth2Client });
   const { data } = await oauth2.userinfo.get();
-  console.log("RETREIVED DATA", data);
 
   if (!data.id || !data.email) {
     throw new Error("Failed to get user info from Google");
@@ -60,38 +58,6 @@ export async function getGoogleUserInfo(accessToken: string) {
     email: data.email,
     name: data.name,
   };
-}
-
-// Update account tokens in Sanity after refresh
-async function updateAccountTokens(
-  accountKey: string,
-  tokens: { accessToken: string; expiryDate: number },
-) {
-  // Locate user and update tokens
-  const user = await client.fetch(USER_ID_BY_ACCOUNT_KEY_QUERY, { accountKey });
-
-  if (user) {
-    await writeClient
-      .patch(user._id)
-      .set({
-        [`connectedAccounts[_key=="${accountKey}"].accessToken`]:
-          tokens.accessToken,
-        [`connectedAccounts[_key=="${accountKey}"].expiryDate`]:
-          tokens.expiryDate,
-      })
-      .commit();
-  }
-}
-
-// Revoke Google OAuth token
-export async function revokeGoogleToken(accessToken: string) {
-  try {
-    await fetch(`https://oauth2.googleapis.com/revoke?token=${accessToken}`, {
-      method: "POST",
-    });
-  } catch (error) {
-    console.error("Failed to revoke token:", error);
-  }
 }
 
 // Get a calendar client for a specific connected account
@@ -129,13 +95,34 @@ export async function getCalendarClient(account: ConnectedAccountWithTokens) {
   return google.calendar({ version: "v3", auth: oauth2Client });
 }
 
+// Update account tokens in Sanity after refresh
+async function updateAccountTokens(
+  accountKey: string,
+  tokens: { accessToken: string; expiryDate: number },
+) {
+  // Find the user with this account and update the tokens
+  const user = await client.fetch(USER_ID_BY_ACCOUNT_KEY_QUERY, { accountKey });
+
+  if (user) {
+    await writeClient
+      .patch(user._id)
+      .set({
+        [`connectedAccounts[_key=="${accountKey}"].accessToken`]:
+          tokens.accessToken,
+        [`connectedAccounts[_key=="${accountKey}"].expiryDate`]:
+          tokens.expiryDate,
+      })
+      .commit();
+  }
+}
+
 // ============================================================================
 // Shared Google Calendar Functions
 // ============================================================================
 
 /**
- *  Direct from Google Calendar's Single Event Type
- * Named to distinguish from UI CalendarEvent in components/calendar/types
+ * Represents a single event from Google Calendar.
+ * Named to distinguish from UI CalendarEvent in components/calendar/types.ts
  */
 export type GoogleCalendarEvent = {
   start: Date;
@@ -145,15 +132,14 @@ export type GoogleCalendarEvent = {
 };
 
 /**
- * Fetch events from connected accounts
- * Core function used by both authenticated and public busy time fetchers
+ * Fetch calendar events from connected accounts.
+ * This is the core function used by both authenticated and public busy time fetchers.
  */
 export async function fetchCalendarEvents(
   accounts: ConnectedAccountWithTokens[],
   startDate: Date,
   endDate: Date,
-) {
-  // Promise<GoogleCalendarEvent[]>
+): Promise<GoogleCalendarEvent[]> {
   const events: GoogleCalendarEvent[] = [];
 
   for (const account of accounts) {
@@ -161,7 +147,6 @@ export async function fetchCalendarEvents(
 
     try {
       const calendar = await getCalendarClient(account);
-
       const { data } = await calendar.events.list({
         calendarId: "primary",
         timeMin: startDate.toISOString(),
@@ -188,6 +173,18 @@ export async function fetchCalendarEvents(
   return events;
 }
 
+// Revoke Google OAuth token
+export async function revokeGoogleToken(accessToken: string) {
+  try {
+    await fetch(`https://oauth2.googleapis.com/revoke?token=${accessToken}`, {
+      method: "POST",
+    });
+  } catch (error) {
+    console.error("Failed to revoke token:", error);
+    // Continue anyway - the token will expire eventually
+  }
+}
+
 // Attendee response status type
 export type AttendeeStatus =
   | "accepted"
@@ -196,18 +193,19 @@ export type AttendeeStatus =
   | "needsAction"
   | "unknown";
 
-// Attendees status from Google Calendar
+// Get event attendee status from Google Calendar
 export async function getEventAttendeeStatus(
   account: ConnectedAccountWithTokens,
   eventId: string,
   guestEmail: string,
-) {
+): Promise<AttendeeStatus> {
   try {
     const calendar = await getCalendarClient(account);
     const response = await calendar.events.get({
       calendarId: "primary",
       eventId,
     });
+
     const attendee = response.data.attendees?.find(
       (a) => a.email?.toLowerCase() === guestEmail.toLowerCase(),
     );
@@ -219,10 +217,12 @@ export async function getEventAttendeeStatus(
     return attendee.responseStatus as AttendeeStatus;
   } catch (error) {
     console.error("Failed to get event attendee status:", error);
-    return "unkown";
+    return "unknown";
   }
 }
-// Get event attendee status fronm Google Calendar
+
+// Get guest attendee status from Google Calendar event
+// Returns whether the event is cancelled/deleted
 export async function getEventAttendeeStatuses(
   account: ConnectedAccountWithTokens,
   eventId: string,
@@ -236,6 +236,12 @@ export async function getEventAttendeeStatuses(
       eventId,
     });
 
+    // Check if event was cancelled in Google Calendar
+    if (response.data.status === "cancelled") {
+      return { hostStatus: "declined", guestStatus: "declined" };
+    }
+
+    // Event exists and is not cancelled - get guest status
     const guestAttendee = response.data.attendees?.find(
       (a) => a.email?.toLowerCase() === guestEmail.toLowerCase(),
     );
@@ -247,7 +253,7 @@ export async function getEventAttendeeStatuses(
         (guestAttendee?.responseStatus as AttendeeStatus) || "needsAction",
     };
   } catch (error: unknown) {
-    // If event was deleted (404/410) treat as cancelled
+    // If event was deleted (404/410), treat as cancelled
     // Google API returns error code in different formats
     const gaxiosError = error as {
       code?: number;

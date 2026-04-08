@@ -39,13 +39,14 @@ export async function processBookingsWithStatuses<
     .filter((booking) => {
       // Keep bookings without Google events or those that are not cancelled
       const bookingStatus = statuses[booking._id];
+      console.log(bookingStatus?.guestStatus);
       return !booking.googleEventId || !bookingStatus?.isCancelled;
     })
     .map((booking) => {
       const bookingStatus = statuses[booking._id];
       return {
         ...booking,
-        getStatus: bookingStatus?.guestStatus,
+        guestStatus: bookingStatus?.guestStatus,
       };
     });
 

@@ -122,7 +122,7 @@ export async function createBooking(data: BookingData) {
             dateTime: data.endTime.toISOString(),
           },
           attendees: [
-            { email: host.email, responseStatus: "accepted" },
+            { email: host.email, responseStatus: "confirmed" },
             { email: data.guestEmail },
           ],
           conferenceData: {

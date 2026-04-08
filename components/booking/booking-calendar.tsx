@@ -203,8 +203,8 @@ export function BookingCalendar({
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Label>
+            <div className="space-y-2">
+              <Label htmlFor="name" className="flex items-center gap-2">
                 <User className="h-4 w-4" />
                 Your Name
               </Label>
@@ -219,8 +219,8 @@ export function BookingCalendar({
               />
             </div>
 
-            <div>
-              <Label>
+            <div className="space-y-2">
+              <Label htmlFor="email" className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
                 Email Address
               </Label>
@@ -235,8 +235,8 @@ export function BookingCalendar({
                 required
               />
             </div>
-            <div>
-              <Label>
+            <div className="space-y-2">
+              <Label htmlFor="notes" className="flex items-center gap-2">
                 <MessageSquare className="h-4 w-4" />
                 Notes (optional)
               </Label>
